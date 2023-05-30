@@ -1,0 +1,46 @@
+// Definimos la clave para el cifrado
+byte clave[] = {0x04, 0xAB, 0x23, 0x6F, 0xD2};
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Mensaje a cifrar
+  char mensaje[9];  
+  int bytesRead = 0;
+
+  // Leer los datos del puerto serie y almacenarlos en mensaje
+  while (Serial.available()) {
+    mensaje[bytesRead] = Serial.read();
+    bytesRead++;
+    if (bytesRead >= sizeof(mensaje) - 1) {
+      break;
+    }
+  }
+  mensaje[bytesRead] = '\0'; 
+
+  Serial.println("Mensaje original: ");
+  Serial.println(mensaje);
+
+  // Obtener la longitud del mensaje
+  int longitud = strlen(mensaje);
+
+  // Cifrar el mensaje
+  for (int i = 0; i < longitud; i++) {
+    mensaje[i] = mensaje[i] ^ clave[i % sizeof(clave)];
+  }
+
+  Serial.println("Mensaje cifrado: ");
+  Serial.println(mensaje);
+
+  // Descifrar el mensaje
+  for (int i = 0; i < longitud; i++) {
+    mensaje[i] = mensaje[i] ^ clave[i % sizeof(clave)];
+  }
+
+  Serial.println("Mensaje descifrado: ");
+  Serial.println(mensaje);
+
+  delay(10000);
+}
